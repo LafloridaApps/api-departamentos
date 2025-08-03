@@ -37,7 +37,8 @@ public class DepartamentoServiceImpl implements DepartamentoService {
                                 String.format("El departamento con el codigo %s", codEx));
 
                 return new DepartamentoResponse(departamento.getId(), departamento.getNombreDepartamento(),
-                                departamento.getRutJefe());
+                                departamento.getRutJefe(), departamento.getRutJefeSuperior(),
+                                departamento.getIdDepartamentoSuperior());
 
         }
 
@@ -48,7 +49,8 @@ public class DepartamentoServiceImpl implements DepartamentoService {
                                 String.format("El departamento con el codigo %d", id));
 
                 return new DepartamentoResponse(departamento.getId(), departamento.getNombreDepartamento(),
-                                departamento.getRutJefe());
+                                departamento.getRutJefe(), departamento.getRutJefeSuperior(),
+                                departamento.getIdDepartamentoSuperior());
         }
 
         @Override

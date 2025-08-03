@@ -112,4 +112,12 @@ public class Departamento {
         this.rutJefe = rutJefe;
     }
 
+    public Long getIdDepartamentoSuperior() {
+        return departamentoSuperior != null ? departamentoSuperior.getId() : null;
+    }
+
+    public Integer getRutJefeSuperior() {
+        return departamentoSuperior != null ? departamentoSuperior.getRutJefe() : null;
+    }
+
 }
