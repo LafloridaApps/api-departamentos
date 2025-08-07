@@ -38,7 +38,7 @@ public class DepartamentoServiceImpl implements DepartamentoService {
 
                 return new DepartamentoResponse(departamento.getId(), departamento.getNombreDepartamento(),
                                 departamento.getRutJefe(), departamento.getRutJefeSuperior(),
-                                departamento.getIdDepartamentoSuperior());
+                                departamento.getIdDepartamentoSuperior(),departamento.getNivel().name() );
 
         }
 
@@ -50,7 +50,7 @@ public class DepartamentoServiceImpl implements DepartamentoService {
 
                 return new DepartamentoResponse(departamento.getId(), departamento.getNombreDepartamento(),
                                 departamento.getRutJefe(), departamento.getRutJefeSuperior(),
-                                departamento.getIdDepartamentoSuperior());
+                                departamento.getIdDepartamentoSuperior(),departamento.getNivel().name());
         }
 
         @Override

@@ -7,6 +7,9 @@ public class DepartamentoResponse {
     private Integer rutJefe;
     private Integer rutJefeSuperior;
     private Long idDeptoSuperior;
+    private String nivelDepartamento;
+
+    
 
     
 
@@ -17,12 +20,13 @@ public class DepartamentoResponse {
     }
 
     public DepartamentoResponse(Long id, String nombre, Integer rutJefe, Integer rutJefeSuperior,
-            Long idDeptoSuperior) {
+            Long idDeptoSuperior, String nivelDepartamento) {
         this.id = id;
         this.nombre = nombre;
         this.rutJefe = rutJefe;
         this.rutJefeSuperior = rutJefeSuperior;
         this.idDeptoSuperior = idDeptoSuperior;
+        this.nivelDepartamento = nivelDepartamento;
 
     }
 
@@ -66,4 +70,14 @@ public class DepartamentoResponse {
         this.rutJefe = rutJefe;
     }
 
+    public String getNivelDepartamento() {
+        return nivelDepartamento;
+    }
+
+    public void setNivelDepartamento(String nivelDepartamento) {
+        this.nivelDepartamento = nivelDepartamento;
+    }
+
+  
+   
 }

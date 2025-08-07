@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apidepartamentos.api_departamentos.services.interfaces.DepartamentoService;
+import com.apidepartamentos.api_departamentos.services.interfaces.EsJefeService;
 import com.apidepartamentos.api_departamentos.services.interfaces.SearchDepartamentoService;
 
 @RestController
@@ -17,10 +18,13 @@ public class DepartamentoController {
 
     private final SearchDepartamentoService searchDepartamento;
 
+    private final EsJefeService esJefeService;
+
     public DepartamentoController(DepartamentoService departamentoService,
-            SearchDepartamentoService searchDepartamento) {
+            SearchDepartamentoService searchDepartamento, EsJefeService esJefeService) {
         this.departamentoService = departamentoService;
         this.searchDepartamento = searchDepartamento;
+        this.esJefeService = esJefeService;
     }
 
     @GetMapping("/codex")
@@ -42,6 +46,12 @@ public class DepartamentoController {
     public ResponseEntity<Object> getDepartamentoByNombre(
             @RequestParam String pattern, @RequestParam int pageNumber) {
         return ResponseEntity.ok(searchDepartamento.findByNombreDepto(pattern, pageNumber));
+    }
+
+    @GetMapping("/esjefe")
+    public ResponseEntity<Object> getDepartamentoJefe(
+            @RequestParam Long depto, @RequestParam Integer rut) {
+        return ResponseEntity.ok(esJefeService.esjefe(depto, rut));
     }
 
 }
