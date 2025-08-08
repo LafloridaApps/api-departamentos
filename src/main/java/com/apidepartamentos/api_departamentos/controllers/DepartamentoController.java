@@ -2,12 +2,14 @@ package com.apidepartamentos.api_departamentos.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apidepartamentos.api_departamentos.services.interfaces.DepartamentoService;
 import com.apidepartamentos.api_departamentos.services.interfaces.EsJefeService;
+import com.apidepartamentos.api_departamentos.services.interfaces.FamiliaDepartamentoService;
 import com.apidepartamentos.api_departamentos.services.interfaces.SearchDepartamentoService;
 
 @RestController
@@ -20,11 +22,15 @@ public class DepartamentoController {
 
     private final EsJefeService esJefeService;
 
+    private final FamiliaDepartamentoService familiaDepartamentoService;
+
     public DepartamentoController(DepartamentoService departamentoService,
-            SearchDepartamentoService searchDepartamento, EsJefeService esJefeService) {
+            SearchDepartamentoService searchDepartamento, EsJefeService esJefeService,
+            FamiliaDepartamentoService familiaDepartamentoService) {
         this.departamentoService = departamentoService;
         this.searchDepartamento = searchDepartamento;
         this.esJefeService = esJefeService;
+        this.familiaDepartamentoService = familiaDepartamentoService;
     }
 
     @GetMapping("/codex")
@@ -52,6 +58,11 @@ public class DepartamentoController {
     public ResponseEntity<Object> getDepartamentoJefe(
             @RequestParam Long depto, @RequestParam Integer rut) {
         return ResponseEntity.ok(esJefeService.esjefe(depto, rut));
+    }
+
+    @GetMapping("/familia/{id}")
+    public ResponseEntity<Object> getFamilia(@PathVariable Long id) {
+        return ResponseEntity.ok(familiaDepartamentoService.getFamilia(id));
     }
 
 }
