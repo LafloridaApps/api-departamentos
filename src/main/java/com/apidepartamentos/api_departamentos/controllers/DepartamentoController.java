@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.apidepartamentos.api_departamentos.services.interfaces.DepartamentoService;
 import com.apidepartamentos.api_departamentos.services.interfaces.EsJefeService;
 import com.apidepartamentos.api_departamentos.services.interfaces.FamiliaDepartamentoService;
+import com.apidepartamentos.api_departamentos.services.interfaces.JerarquiaService;
 import com.apidepartamentos.api_departamentos.services.interfaces.SearchDepartamentoService;
 
 @RestController
@@ -17,20 +18,19 @@ import com.apidepartamentos.api_departamentos.services.interfaces.SearchDepartam
 public class DepartamentoController {
 
     private final DepartamentoService departamentoService;
-
     private final SearchDepartamentoService searchDepartamento;
-
     private final EsJefeService esJefeService;
-
     private final FamiliaDepartamentoService familiaDepartamentoService;
+    private final JerarquiaService jerarquiaService;
 
     public DepartamentoController(DepartamentoService departamentoService,
             SearchDepartamentoService searchDepartamento, EsJefeService esJefeService,
-            FamiliaDepartamentoService familiaDepartamentoService) {
+            FamiliaDepartamentoService familiaDepartamentoService, JerarquiaService jerarquiaService) {
         this.departamentoService = departamentoService;
         this.searchDepartamento = searchDepartamento;
         this.esJefeService = esJefeService;
         this.familiaDepartamentoService = familiaDepartamentoService;
+        this.jerarquiaService = jerarquiaService;
     }
 
     @GetMapping("/codex")
@@ -65,4 +65,8 @@ public class DepartamentoController {
         return ResponseEntity.ok(familiaDepartamentoService.getFamilia(id));
     }
 
+    @GetMapping("/jerarquia/{id}")
+    public ResponseEntity<Object> getJerarquia(@PathVariable Long id) {
+        return ResponseEntity.ok(jerarquiaService.getJerarquiaPorId(id));
+    }
 }
