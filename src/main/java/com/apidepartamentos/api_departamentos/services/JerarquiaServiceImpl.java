@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class JerarquiaServiceImpl implements JerarquiaService {
@@ -30,12 +29,12 @@ public class JerarquiaServiceImpl implements JerarquiaService {
             List<Departamento> direcciones = departamentoRepository.findByNivel(NivelDepartamento.DIRECCION);
             List<DepartamentoJerarquiaDTO> direccionDTOs = direcciones.stream()
                     .map(dir -> new DepartamentoJerarquiaDTO(dir.getId(), dir.getNombreDepartamento(), dir.getNivel().toString(), Collections.emptyList()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             List<Departamento> administraciones = departamentoRepository.findByNivel(NivelDepartamento.ADMINISTRACION);
             List<DepartamentoJerarquiaDTO> administracionDTOs = administraciones.stream()
                     .map(admin -> new DepartamentoJerarquiaDTO(admin.getId(), admin.getNombreDepartamento(), admin.getNivel().toString(), direccionDTOs))
-                    .collect(Collectors.toList());
+                    .toList();
 
             return new DepartamentoJerarquiaDTO(departamento.getId(), departamento.getNombreDepartamento(), departamento.getNivel().toString(), administracionDTOs);
 
@@ -43,7 +42,7 @@ public class JerarquiaServiceImpl implements JerarquiaService {
             List<Departamento> direcciones = departamentoRepository.findByNivel(NivelDepartamento.DIRECCION);
             List<DepartamentoJerarquiaDTO> hijos = direcciones.stream()
                     .map(dir -> new DepartamentoJerarquiaDTO(dir.getId(), dir.getNombreDepartamento(), dir.getNivel().toString(), Collections.emptyList()))
-                    .collect(Collectors.toList());
+                    .toList();
             return new DepartamentoJerarquiaDTO(departamento.getId(), departamento.getNombreDepartamento(), departamento.getNivel().toString(), hijos);
         }
 
@@ -53,7 +52,7 @@ public class JerarquiaServiceImpl implements JerarquiaService {
     private DepartamentoJerarquiaDTO construirJerarquia(Departamento departamento) {
         List<DepartamentoJerarquiaDTO> hijos = departamento.getChildrens().stream()
                 .map(this::construirJerarquia)
-                .collect(Collectors.toList());
+                .toList();
         return new DepartamentoJerarquiaDTO(departamento.getId(), departamento.getNombreDepartamento(), departamento.getNivel().toString(), hijos);
     }
 }
