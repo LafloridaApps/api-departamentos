@@ -28,7 +28,7 @@ public class EsJefeServiceImpl implements EsJefeService {
 
         boolean esJefe = departamento.getRutJefe().equals(rut);
 
-        boolean esDirector = nivelDireccion(departamento.getNivel());
+        boolean esDirector = nivelDireccion(departamento.getNivel()) && departamento.getRutJefe().equals(rut);
 
         return new CargoFunc(esJefe, esDirector);
 
