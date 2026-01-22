@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.apidepartamentos.api_departamentos.dto.ErrorResponse;
-import com.apidepartamentos.api_departamentos.exceptions.NotFounException;
+import com.apidepartamentos.api_departamentos.exceptions.NotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class HandlerExceptions {
 
-      @ExceptionHandler(NotFounException.class)
-    public ResponseEntity<Object> handlerNotFoundException(NotFounException e, HttpServletRequest request) {
+      @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handlerNotFoundException(NotFoundException e, HttpServletRequest request) {
 
         ErrorResponse error = maptoErrorResponse(e, request, HttpStatus.NOT_FOUND);
 

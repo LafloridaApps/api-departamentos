@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.apidepartamentos.api_departamentos.dto.DepartamentoResponse;
 import com.apidepartamentos.api_departamentos.entities.Departamento;
 import com.apidepartamentos.api_departamentos.entities.Departamento.NivelDepartamento;
-import com.apidepartamentos.api_departamentos.exceptions.NotFounException;
+import com.apidepartamentos.api_departamentos.exceptions.NotFoundException;
 import com.apidepartamentos.api_departamentos.repositories.DepartamentoRepository;
 import com.apidepartamentos.api_departamentos.services.interfaces.FamiliaDepartamentoService;
 
@@ -24,7 +24,7 @@ public class FamiliaDepartamentoServiceImpl implements FamiliaDepartamentoServic
     @Override
     public List<DepartamentoResponse> getFamilia(Long id) {
         Departamento departamento = departamentoRepository.findById(id)
-                .orElseThrow(() -> new NotFounException("No se encontro el departamento con id: " + id));
+                .orElseThrow(() -> new NotFoundException("No se encontro el departamento con id: " + id));
 
         List<Departamento> familia = new ArrayList<>();
         NivelDepartamento nivel = departamento.getNivel();

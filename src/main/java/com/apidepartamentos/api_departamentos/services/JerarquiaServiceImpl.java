@@ -3,7 +3,7 @@ package com.apidepartamentos.api_departamentos.services;
 import com.apidepartamentos.api_departamentos.dto.DepartamentoJerarquiaDTO;
 import com.apidepartamentos.api_departamentos.entities.Departamento;
 import com.apidepartamentos.api_departamentos.entities.Departamento.NivelDepartamento;
-import com.apidepartamentos.api_departamentos.exceptions.NotFounException;
+import com.apidepartamentos.api_departamentos.exceptions.NotFoundException;
 import com.apidepartamentos.api_departamentos.repositories.DepartamentoRepository;
 import com.apidepartamentos.api_departamentos.services.interfaces.JerarquiaService;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class JerarquiaServiceImpl implements JerarquiaService {
     @Override
     public DepartamentoJerarquiaDTO getJerarquiaPorId(Long id) {
         Departamento departamento = departamentoRepository.findById(id)
-                .orElseThrow(() -> new NotFounException("No se encontró el departamento con id: " + id));
+                .orElseThrow(() -> new NotFoundException("No se encontró el departamento con id: " + id));
 
         if (departamento.getNivel() == NivelDepartamento.ALCALDIA) {
             List<Departamento> direcciones = departamentoRepository.findByNivel(NivelDepartamento.DIRECCION);
