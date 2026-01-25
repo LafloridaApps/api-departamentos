@@ -9,11 +9,10 @@ public interface DepartamentoService {
 
     DepartamentoResponse getDeparamentoByCodigoExt(String codEx);
 
-
     DepartamentoResponse getDepartamentoById(Long id);
 
     List<DepartamentoList> getDepartamentosList();
 
-
+    void updateJefeDepartamento(Long idDepto, Integer rut);
 
 }

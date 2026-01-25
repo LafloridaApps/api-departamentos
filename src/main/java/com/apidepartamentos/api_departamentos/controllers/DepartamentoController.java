@@ -1,8 +1,12 @@
 package com.apidepartamentos.api_departamentos.controllers;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,5 +72,15 @@ public class DepartamentoController {
     @GetMapping("/jerarquia/{id}")
     public ResponseEntity<Object> getJerarquia(@PathVariable Long id) {
         return ResponseEntity.ok(jerarquiaService.getJerarquiaPorId(id));
+    }
+
+    @PutMapping("/update/{idDepto}")
+    public ResponseEntity<Object> updateJefeDepartamento(@PathVariable Long idDepto,
+            @RequestBody Map<String, Integer> request) {
+
+        Integer rut = request.get("rut");
+
+        departamentoService.updateJefeDepartamento(idDepto, rut);
+        return ResponseEntity.ok().body(Map.of("message", "departamento actualizado con exito"));
     }
 }

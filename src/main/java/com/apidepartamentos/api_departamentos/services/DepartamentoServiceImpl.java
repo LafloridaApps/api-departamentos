@@ -38,7 +38,7 @@ public class DepartamentoServiceImpl implements DepartamentoService {
 
                 return new DepartamentoResponse(departamento.getId(), departamento.getNombreDepartamento(),
                                 departamento.getRutJefe(), departamento.getRutJefeSuperior(),
-                                departamento.getIdDepartamentoSuperior(),departamento.getNivel().name() );
+                                departamento.getIdDepartamentoSuperior(), departamento.getNivel().name());
 
         }
 
@@ -50,7 +50,7 @@ public class DepartamentoServiceImpl implements DepartamentoService {
 
                 return new DepartamentoResponse(departamento.getId(), departamento.getNombreDepartamento(),
                                 departamento.getRutJefe(), departamento.getRutJefeSuperior(),
-                                departamento.getIdDepartamentoSuperior(),departamento.getNivel().name());
+                                departamento.getIdDepartamentoSuperior(), departamento.getNivel().name());
         }
 
         @Override
@@ -72,6 +72,11 @@ public class DepartamentoServiceImpl implements DepartamentoService {
                 dto.setNivel(departamento.getNivel().toString());
                 dto.setRutJefe(departamento.getRutJefe());
 
+                CodigoExterno codigoExterno = getCodigoExternoByDepartamento(departamento);
+                dto.setCodigoExterno(codigoExterno != null && codigoExterno.getCodigoEx() != null
+                                ? codigoExterno.getCodigoEx()
+                                : " ");
+
                 List<Departamento> hijos = departamento.getChildrens();
                 if (hijos != null && !hijos.isEmpty()) {
                         dto.setDependencias(
@@ -81,6 +86,23 @@ public class DepartamentoServiceImpl implements DepartamentoService {
                 }
 
                 return dto;
+        }
+
+        private CodigoExterno getCodigoExternoByDepartamento(Departamento departamento) {
+                return codigoExternoRepository.findByDepartamento(departamento).orElse(null);
+        }
+
+        @Override
+        public void updateJefeDepartamento(Long idDepto, Integer rut) {
+
+                Departamento departamento = RepositoryUtils.findOrThrow(
+                                departamentoRepository.findById(idDepto),
+                                String.format("El departamento con el codigo %d", idDepto));
+
+                departamento.setRutJefe(rut);
+
+                departamentoRepository.save(departamento);
+
         }
 
 }
