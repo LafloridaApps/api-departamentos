@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.10</version>
+		<version>3.5.11</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.apidepartamentos</groupId>
 	<artifactId>api-departamentos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>api-departamentos</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Api departamentos</description>
 	<url />
 	<licenses>
 		<license />
@@ -64,6 +64,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<version>3.4.2</version>
 		</dependency>
 	</dependencies>
 

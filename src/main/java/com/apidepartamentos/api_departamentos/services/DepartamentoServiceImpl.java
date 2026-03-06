@@ -10,6 +10,7 @@ import com.apidepartamentos.api_departamentos.entities.CodigoExterno;
 import com.apidepartamentos.api_departamentos.entities.Departamento;
 import com.apidepartamentos.api_departamentos.repositories.CodigoExternoRepository;
 import com.apidepartamentos.api_departamentos.repositories.DepartamentoRepository;
+import com.apidepartamentos.api_departamentos.services.interfaces.DepartamentoMapper;
 import com.apidepartamentos.api_departamentos.services.interfaces.DepartamentoService;
 import com.apidepartamentos.api_departamentos.utils.RepositoryUtils;
 
@@ -20,10 +21,14 @@ public class DepartamentoServiceImpl implements DepartamentoService {
 
         private final DepartamentoRepository departamentoRepository;
 
+        private final DepartamentoMapper departamentoMapper;
+
         public DepartamentoServiceImpl(CodigoExternoRepository codigoExternoRepository,
-                        DepartamentoRepository departamentoRepository) {
+                        DepartamentoRepository departamentoRepository,
+                DepartamentoMapper departamentoMapper) {
                 this.codigoExternoRepository = codigoExternoRepository;
                 this.departamentoRepository = departamentoRepository;
+                this.departamentoMapper = departamentoMapper;
         }
 
         @Override
@@ -61,26 +66,9 @@ public class DepartamentoServiceImpl implements DepartamentoService {
                                 .toList();
 
                 return raices.stream()
-                                .map(this::mapDto)
+                                .map(departamentoMapper::matoToDto)
                                 .toList();
         }
 
-        private DepartamentoList mapDto(Departamento departamento) {
-                DepartamentoList dto = new DepartamentoList();
-                dto.setId(departamento.getId());
-                dto.setNombre(departamento.getNombreDepartamento());
-                dto.setNivel(departamento.getNivel().toString());
-                dto.setRutJefe(departamento.getRutJefe());
-
-                List<Departamento> hijos = departamento.getChildrens();
-                if (hijos != null && !hijos.isEmpty()) {
-                        dto.setDependencias(
-                                        hijos.stream()
-                                                        .map(this::mapDto)
-                                                        .toList());
-                }
-
-                return dto;
-        }
-
+        
 }
