@@ -24,8 +24,29 @@ public class DepartamentoMapperImpl implements DepartamentoMapper {
         this.apiFuncionarioService = apiFuncionarioService;
     }
 
+    /**
+     * Public entry point. Builds a fresh cache and delegates to recursive implementation.
+     */
     @Override
-    public DepartamentoList matoToDto(Departamento departamento) {
+    public DepartamentoList maptoToDto(Departamento departamento) {
+        return maptoToDto(departamento, new java.util.HashMap<>());
+    }
+
+    /**
+     * Exposed overload allowing callers to provide a shared cache. Useful when
+     * mapping multiple roots in one batch (see DepartamentoServiceImpl).
+     */
+    @Override
+    public DepartamentoList maptoToDto(Departamento departamento,
+            java.util.Map<Integer, FuncionarioResponseApi> jefeCache) {
+        return maptoToDtoInternal(departamento, jefeCache);
+    }
+
+    /**
+     * Recursive implementation that carries a map of previously fetched funcionarios.
+     */
+    private DepartamentoList maptoToDtoInternal(Departamento departamento,
+            java.util.Map<Integer, FuncionarioResponseApi> jefeCache) {
         DepartamentoList dto = new DepartamentoList();
         dto.setId(departamento.getId());
         dto.setNombre(departamento.getNombreDepartamento());
@@ -33,27 +54,22 @@ public class DepartamentoMapperImpl implements DepartamentoMapper {
         dto.setRutJefe(departamento.getRutJefe());
         dto.setCodigoExterno(getCodigoExternoByDepto(departamento));
 
-        FuncionarioResponseApi  funcionario = new FuncionarioResponseApi();
-        
-        if(departamento.getRutJefe() != null){
-             funcionario = getPersonaApi(departamento.getRutJefe());
-             dto.setNombreJefe(funcionario.getNombreCompleto());
-             dto.setVrutJefe(funcionario.getVrut());
-        }else{
+        if (departamento.getRutJefe() != null) {
+            FuncionarioResponseApi funcionario = jefeCache.computeIfAbsent(
+                    departamento.getRutJefe(), this::getPersonaApi);
+            dto.setNombreJefe(funcionario.getNombreCompleto());
+            dto.setVrutJefe(funcionario.getVrut());
+            dto.setEmail(funcionario.getEmail());
+        } else {
             dto.setNombreJefe(" ");
             dto.setVrutJefe(" ");
-            
         }
-        
-
-        dto.setNombreJefe(funcionario.getNombreCompleto());
-        dto.setVrutJefe(funcionario.getVrut());
 
         List<Departamento> hijos = departamento.getChildrens();
         if (hijos != null && !hijos.isEmpty()) {
             dto.setDependencias(
                     hijos.stream()
-                            .map(this::matoToDto)
+                            .map(h -> maptoToDtoInternal(h, jefeCache))
                             .toList());
         }
 
@@ -62,15 +78,11 @@ public class DepartamentoMapperImpl implements DepartamentoMapper {
     }
 
     private String getCodigoExternoByDepto(Departamento departamento) {
-
         CodigoExterno codigoExterno = codigoExternoRepository.findByDepartamento(departamento).orElse(null);
-
         if (codigoExterno == null) {
             return null;
         }
-
         return codigoExterno.getCodigoEx();
-
     }
 
     private FuncionarioResponseApi getPersonaApi(Integer rut) {

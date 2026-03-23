@@ -35,6 +35,7 @@ public class Departamento {
     private NivelDepartamento nivel;
 
     @OneToMany(mappedBy = "departamentoSuperior")
+    @org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
     private List<Departamento> childrens = new ArrayList<>();
 
     public Long getId() {

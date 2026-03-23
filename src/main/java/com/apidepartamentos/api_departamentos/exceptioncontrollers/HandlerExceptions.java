@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.apidepartamentos.api_departamentos.dto.ErrorResponse;
+import com.apidepartamentos.api_departamentos.exceptions.CodigExternoException;
 import com.apidepartamentos.api_departamentos.exceptions.NotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class HandlerExceptions {
 
-      @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handlerNotFoundException(NotFoundException e, HttpServletRequest request) {
 
         ErrorResponse error = maptoErrorResponse(e, request, HttpStatus.NOT_FOUND);
@@ -24,6 +25,14 @@ public class HandlerExceptions {
 
     }
 
+     @ExceptionHandler(CodigExternoException.class)
+    public ResponseEntity<Object> handlerCodigoExternoException(CodigExternoException e, HttpServletRequest request) {
+
+        ErrorResponse error = maptoErrorResponse(e, request, HttpStatus.CONFLICT);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+
+    }
 
     private <T extends Exception> ErrorResponse maptoErrorResponse(T e, HttpServletRequest request, HttpStatus status) {
 

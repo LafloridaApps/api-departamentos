@@ -13,6 +13,7 @@ public interface DepartamentoRepository extends JpaRepository<Departamento, Long
 
     Page<Departamento> findByNombreDepartamentoContainingIgnoreCase(String nombreDepto, Pageable pageable);
 
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"childrens"})
     List<Departamento> findByNivel(NivelDepartamento nivel);
 
 }
