@@ -82,7 +82,6 @@ public class DepartamentoController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateJedeDEpartamento(@PathVariable Long id, @RequestParam Integer rut) {
 
-       
         departamentoService.updateJefeDepartamento(id, rut);
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(MESSAGE_VALUE, "Departametno acutalizado con éxito"));
 
@@ -124,4 +123,7 @@ public class DepartamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(MESSAGE_VALUE, "Departamento agregado con éxito"));
 
     }
+
+ 
+
 }
