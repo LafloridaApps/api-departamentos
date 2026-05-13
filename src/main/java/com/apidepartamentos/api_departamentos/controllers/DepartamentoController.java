@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.apidepartamentos.api_departamentos.dto.DepartamentoRequest;
 import com.apidepartamentos.api_departamentos.services.interfaces.DepartamentoService;
+import com.apidepartamentos.api_departamentos.services.interfaces.DepartamentoSinJerarquiaService;
 import com.apidepartamentos.api_departamentos.services.interfaces.EsJefeService;
 import com.apidepartamentos.api_departamentos.services.interfaces.FamiliaDepartamentoService;
 import com.apidepartamentos.api_departamentos.services.interfaces.JerarquiaService;
@@ -23,6 +25,7 @@ import com.apidepartamentos.api_departamentos.services.interfaces.SearchDepartam
 
 @RestController
 @RequestMapping("/api/departamentos")
+@CrossOrigin(origins = "*")
 public class DepartamentoController {
 
     private final DepartamentoService departamentoService;
@@ -30,16 +33,20 @@ public class DepartamentoController {
     private final EsJefeService esJefeService;
     private final FamiliaDepartamentoService familiaDepartamentoService;
     private final JerarquiaService jerarquiaService;
+    private final DepartamentoSinJerarquiaService departamentoSinJerarquiaService;
+
     private static final String MESSAGE_VALUE = "message";
 
     public DepartamentoController(DepartamentoService departamentoService,
             SearchDepartamentoService searchDepartamento, EsJefeService esJefeService,
-            FamiliaDepartamentoService familiaDepartamentoService, JerarquiaService jerarquiaService) {
+            FamiliaDepartamentoService familiaDepartamentoService, JerarquiaService jerarquiaService,
+            DepartamentoSinJerarquiaService departamentoSinJerarquiaService) {
         this.departamentoService = departamentoService;
         this.searchDepartamento = searchDepartamento;
         this.esJefeService = esJefeService;
         this.familiaDepartamentoService = familiaDepartamentoService;
         this.jerarquiaService = jerarquiaService;
+        this.departamentoSinJerarquiaService = departamentoSinJerarquiaService;
     }
 
     @GetMapping("/codex")
@@ -53,7 +60,11 @@ public class DepartamentoController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Object> getDeptoList() {
+    public ResponseEntity<Object> getDeptoList(@RequestParam(required = false) Integer jerarquia) {
+        if (jerarquia != null && jerarquia == 1) {
+            return ResponseEntity.ok(departamentoSinJerarquiaService.listadoDepartamentos());
+        }
+
         return ResponseEntity.ok(departamentoService.getDepartamentosList());
     }
 
@@ -83,7 +94,7 @@ public class DepartamentoController {
     public ResponseEntity<Object> updateJedeDEpartamento(@PathVariable Long id, @RequestParam Integer rut) {
 
         departamentoService.updateJefeDepartamento(id, rut);
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of(MESSAGE_VALUE, "Departametno acutalizado con éxito"));
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(MESSAGE_VALUE, "Departamento acutalizado con éxito"));
 
     }
 
@@ -95,7 +106,7 @@ public class DepartamentoController {
         }
 
         departamentoService.updteNombreDeparamento(id, nombre);
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of(MESSAGE_VALUE, "Departametno actualizado con éxito"));
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(MESSAGE_VALUE, "Departamento actualizado con éxito"));
 
     }
 
@@ -123,7 +134,5 @@ public class DepartamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of(MESSAGE_VALUE, "Departamento agregado con éxito"));
 
     }
-
- 
 
 }
