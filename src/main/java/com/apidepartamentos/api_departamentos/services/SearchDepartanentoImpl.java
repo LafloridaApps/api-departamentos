@@ -26,7 +26,7 @@ public class SearchDepartanentoImpl implements SearchDepartamentoService {
     @Override
     public SearchDepartamentoResponse findByNombreDepto(String nombreDepto, int pageNumber) {
 
-        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("nombreDepartamento").ascending());
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by(Sort.Order.asc(Departamento.NOMBRE_DEPARTAMENTO)));
 
         Page<Departamento> pageDepartamentos = departamentoRepository
                 .findByNombreDepartamentoContainingIgnoreCase(nombreDepto, pageable);

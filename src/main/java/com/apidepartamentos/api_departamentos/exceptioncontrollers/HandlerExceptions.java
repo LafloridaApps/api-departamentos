@@ -1,6 +1,5 @@
 package com.apidepartamentos.api_departamentos.exceptioncontrollers;
 
-import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.apidepartamentos.api_departamentos.dto.ErrorResponse;
 import com.apidepartamentos.api_departamentos.exceptions.CodigExternoException;
 import com.apidepartamentos.api_departamentos.exceptions.NotFoundException;
+import com.apidepartamentos.api_departamentos.utils.FechaUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -37,7 +37,7 @@ public class HandlerExceptions {
     private <T extends Exception> ErrorResponse maptoErrorResponse(T e, HttpServletRequest request, HttpStatus status) {
 
         return ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(FechaUtils.getCurrentDateTime())
                 .status(status.value())
                 .error(status.getReasonPhrase())
                 .mensaje(e.getMessage())

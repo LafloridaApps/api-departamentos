@@ -5,42 +5,51 @@
 # =========================================================
 NOMBRE_APP="api-departamentos"
 PUERTO="8085"
-TARGET_IMAGE="$NOMBRE_APP:local"
-REMOTO="desarrollo@app-server"
 NETWORK="laflorida"
+
+VERSION=$(jq -r '.["'$NOMBRE_APP'"]' versions.json 2>/dev/null)
+if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+    echo "⚠️  No se encontró la versión en versions.json. Usando v1.0.0 por defecto."
+    VERSION="v1.0.0"
+fi
+TARGET_IMAGE="$NOMBRE_APP:$VERSION"
 # =========================================================
+
+echo "Eliminando imagen antigua..."
+docker rmi -f $TARGET_IMAGE 2>/dev/null
 
 # 1. Construcción local
 echo "--- 1. Creando archivo JAR y construyendo imagen local ---"
 ./mvnw clean package -DskipTests && \
 docker build -t $TARGET_IMAGE .
 
+
+
 if [ $? -ne 0 ]; then
     echo "❌ Error en la construcción local. Abortando."
     exit 1
 fi
 
-# 2. Preparación en el servidor remoto (Limpiar imagen y contenedor antiguo)
-echo "--- 2. Limpiando entorno remoto ($REMOTO) ---"
-ssh $REMOTO << EOF
+# 2. Preparación (Limpiar imagen y contenedor antiguo)
+echo "--- 2. Limpiando entorno"
+#ssh $REMOTO << EOF
     echo "Deteniendo contenedor antiguo si existe..."
-    docker stop "${NOMBRE_APP}-container" 2>/dev/null || true
-    docker rm "${NOMBRE_APP}-container" 2>/dev/null || true
+    docker stop "${NOMBRE_APP}-container" 2>/dev/null
+    docker rm "${NOMBRE_APP}-container" 2>/dev/null 
     
-    echo "Eliminando imagen antigua..."
-    docker rmi -f $TARGET_IMAGE 2>/dev/null || true
+    
     
     echo "Asegurando que la red $NETWORK exista..."
     docker network inspect $NETWORK >/dev/null 2>&1 || docker network create $NETWORK
-EOF
+#EOF
 
 # 3. Transferencia de la imagen
-echo "--- 3. Transfiriendo y cargando nueva imagen ($TARGET_IMAGE) ---"
-docker save $TARGET_IMAGE | gzip | ssh $REMOTO "gunzip | docker load"
+#echo "--- 3. Transfiriendo y cargando nueva imagen ($TARGET_IMAGE) ---"
+#docker save $TARGET_IMAGE | gzip | ssh $REMOTO "gunzip | docker load"
 
 # 4. Despliegue en el servidor remoto
 echo "--- 4. Iniciando nuevo contenedor en puerto $PUERTO ---"
-ssh $REMOTO << EOF
+#ssh $REMOTO << EOF
     docker run \
         --restart always \
         -d \
@@ -50,7 +59,7 @@ ssh $REMOTO << EOF
         --add-host=host.docker.internal:host-gateway \
         --name "${NOMBRE_APP}-container" \
         "$TARGET_IMAGE"
-EOF
+#EOF
 
 # 5. Limpieza local
 echo "--- 5. Limpieza de imágenes locales ---"

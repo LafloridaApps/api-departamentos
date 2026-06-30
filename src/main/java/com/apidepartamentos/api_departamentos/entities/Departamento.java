@@ -18,6 +18,8 @@ import jakarta.persistence.OneToMany;
 @Table(name = "departamentos")
 public class Departamento {
 
+    public static final String NOMBRE_DEPARTAMENTO = "nombreDepartamento";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
