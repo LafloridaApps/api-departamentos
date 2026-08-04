@@ -1,5 +1,6 @@
 package com.apidepartamentos.api_departamentos.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,10 @@ public interface CodigoExternoRepository extends JpaRepository<CodigoExterno, Lo
 
     
     Optional<CodigoExterno> findByDepartamento(Departamento departamento);
+
+
+
+    List<CodigoExterno> findAllById(List<Long> ids);
 
 
 }
