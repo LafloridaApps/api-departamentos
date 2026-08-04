@@ -9,22 +9,13 @@ PUERTO="8085"
 IMAGEN_HUB="ghcr.io/lafloridaapps/api-departamentos"
 # =========================================================
 
-OPCION=${1:-"dev"}
 
-case $OPCION in
-    "prod")
-        echo "--- MODO PRODUCCIÓN: Bajando de GitHub Packages ($IMAGEN_HUB) ---"
-        # Ahora el pull se hace desde el registro privado de GitHub
-        docker pull $IMAGEN_HUB:latest
-        TARGET_IMAGE="$IMAGEN_HUB:latest"
-        ;;
-    *)
-        echo "--- MODO DESARROLLO: Compilando localmente ($NOMBRE_APP) ---"
+        echo "Compilando ($NOMBRE_APP) ---"
         ./mvnw clean package -DskipTests
         docker build -t $NOMBRE_APP:local .
         TARGET_IMAGE="$NOMBRE_APP:local"
-        ;;
-esac
+
+
 
 echo "--- Limpiando contenedor anterior ---"
 docker stop ${NOMBRE_APP}-container 2>/dev/null

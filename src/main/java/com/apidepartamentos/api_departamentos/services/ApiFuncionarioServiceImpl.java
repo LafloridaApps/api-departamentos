@@ -19,8 +19,8 @@ public class ApiFuncionarioServiceImpl implements ApiFuncionarioService {
     private final WebClient webClient;
     private static final Logger logger = LoggerFactory.getLogger(ApiFuncionarioServiceImpl.class);
 
-   public ApiFuncionarioServiceImpl(WebClient.Builder webClientBuilder, ApiProperties apiProperties) {
-        this.webClient = webClientBuilder.baseUrl(apiProperties.getFuncionarioUrl()).build();
+   public ApiFuncionarioServiceImpl(ApiProperties apiProperties) {
+        this.webClient = WebClient.create(apiProperties.getFuncionarioUrl());
     }
 
     @Override
