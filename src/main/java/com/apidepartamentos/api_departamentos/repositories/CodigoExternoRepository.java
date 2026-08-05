@@ -16,10 +16,8 @@ public interface CodigoExternoRepository extends JpaRepository<CodigoExterno, Lo
 
     
     Optional<CodigoExterno> findByDepartamento(Departamento departamento);
-
-
-
-    List<CodigoExterno> findAllById(List<Long> ids);
+    
+    List<CodigoExterno> findAllByDepartamentoIdIn(List<Long> ids);
 
 
 }
