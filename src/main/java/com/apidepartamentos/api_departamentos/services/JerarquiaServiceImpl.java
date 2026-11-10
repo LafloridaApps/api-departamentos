@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class JerarquiaServiceImpl implements JerarquiaService {
@@ -47,6 +48,64 @@ public class JerarquiaServiceImpl implements JerarquiaService {
         }
 
         return construirJerarquia(departamento);
+    }
+
+    /** Resuelve el ámbito propio y devuelve todas sus unidades dependientes. */
+    @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public DepartamentoJerarquiaDTO getJerarquiaDireccionPorId(Long id) {
+        Departamento origen = departamentoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No se encontró el departamento con id: " + id));
+        Departamento actual = origen;
+        Departamento subdireccion = null;
+        Departamento administracion = null;
+        Departamento alcaldia = null;
+        java.util.Set<Long> visitados = new java.util.HashSet<>();
+        while (actual != null) {
+            validarDepartamentoNoVisitado(actual, visitados);
+            if (actual.getNivel() == NivelDepartamento.DIRECCION) {
+                return construirAmbitoBusqueda(actual);
+            }
+            if (actual.getNivel() == NivelDepartamento.SUBDIRECCION && subdireccion == null) {
+                subdireccion = actual;
+            }
+            if (actual.getNivel() == NivelDepartamento.ADMINISTRACION && administracion == null) {
+                administracion = actual;
+            }
+            if (actual.getNivel() == NivelDepartamento.ALCALDIA && alcaldia == null) {
+                alcaldia = actual;
+            }
+            actual = actual.getDepartamentoSuperior();
+        }
+        if (subdireccion != null) {
+            return construirAmbitoBusqueda(subdireccion);
+        }
+        if (administracion != null) {
+            return construirAmbitoBusqueda(administracion);
+        }
+        if (alcaldia != null) {
+            return construirAmbitoBusqueda(alcaldia);
+        }
+        throw new NotFoundException("El departamento no tiene una dirección, subdirección, administración o alcaldía superior asignada.");
+    }
+
+    private void validarDepartamentoNoVisitado(Departamento departamento, Set<Long> visitados) {
+        if (departamento.getId() == null || !visitados.add(departamento.getId())) {
+            throw new NotFoundException("La jerarquía del departamento contiene una relación circular.");
+        }
+    }
+
+    // Administración y Alcaldía actúan como ámbitos propios para búsqueda,
+    // aunque sus direcciones dependan de ellas en el organigrama.
+    private DepartamentoJerarquiaDTO construirAmbitoBusqueda(Departamento departamento) {
+        var hijos = departamento.getChildrens().stream()
+                .filter(hijo -> hijo.getNivel() != NivelDepartamento.DIRECCION
+                        && hijo.getNivel() != NivelDepartamento.ADMINISTRACION
+                        && hijo.getNivel() != NivelDepartamento.ALCALDIA)
+                .map(this::construirAmbitoBusqueda)
+                .toList();
+        return new DepartamentoJerarquiaDTO(departamento.getId(), departamento.getNombreDepartamento(),
+                departamento.getNivel().toString(), hijos);
     }
 
     private DepartamentoJerarquiaDTO construirJerarquia(Departamento departamento) {

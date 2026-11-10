@@ -26,9 +26,9 @@ public class EsJefeServiceImpl implements EsJefeService {
         Departamento departamento = RepositoryUtils.findOrThrow(departamentoRepository.findById(idDepto),
                 String.format("Departamento con id %d no encontrado", idDepto));
 
-        boolean esJefe = departamento.getRutJefe().equals(rut);
+        boolean esJefe = departamento.getRutJefe() != null && departamento.getRutJefe().equals(rut);
 
-        boolean esDirector = nivelDireccion(departamento.getNivel()) && departamento.getRutJefe().equals(rut);
+        boolean esDirector = esJefe && nivelDireccion(departamento.getNivel());
 
         return new CargoFunc(esJefe, esDirector);
 

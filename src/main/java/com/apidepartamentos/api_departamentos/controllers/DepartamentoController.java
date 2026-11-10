@@ -85,6 +85,11 @@ public class DepartamentoController {
         return ResponseEntity.ok(familiaDepartamentoService.getFamilia(id));
     }
 
+    @GetMapping("/jerarquia-direccion/{id}")
+    public ResponseEntity<Object> getJerarquiaDireccion(@PathVariable Long id) {
+        return ResponseEntity.ok(jerarquiaService.getJerarquiaDireccionPorId(id));
+    }
+
     @GetMapping("/jerarquia/{id}")
     public ResponseEntity<Object> getJerarquia(@PathVariable Long id) {
         return ResponseEntity.ok(jerarquiaService.getJerarquiaPorId(id));

@@ -4,4 +4,5 @@ import com.apidepartamentos.api_departamentos.dto.DepartamentoJerarquiaDTO;
 
 public interface JerarquiaService {
     DepartamentoJerarquiaDTO getJerarquiaPorId(Long id);
+    DepartamentoJerarquiaDTO getJerarquiaDireccionPorId(Long id);
 }
