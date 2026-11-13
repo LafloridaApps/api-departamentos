@@ -1,5 +1,7 @@
 package com.apidepartamentos.api_departamentos.services;
 
+import java.net.URI;
+
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,18 @@ public class ApiFuncionarioServiceImpl implements ApiFuncionarioService {
     private static final Logger logger = LoggerFactory.getLogger(ApiFuncionarioServiceImpl.class);
 
    public ApiFuncionarioServiceImpl(ApiProperties apiProperties) {
-        this.webClient = WebClient.create(apiProperties.getFuncionarioUrl());
+        String url = apiProperties.getFuncionarioUrl();
+        try {
+            URI uri = URI.create(url == null ? "" : url);
+            if (uri.getHost() == null
+                    || !("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme()))) {
+                throw new IllegalArgumentException("Se requiere una URL HTTP o HTTPS con host");
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    "api.funcionario-url debe ser una URL HTTP o HTTPS válida; revise la variable FUNCIONARIO", e);
+        }
+        this.webClient = WebClient.create(url);
     }
 
     @Override
