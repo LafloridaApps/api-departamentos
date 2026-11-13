@@ -108,6 +108,9 @@ public class DepartamentoServiceImpl implements DepartamentoService {
                 }
 
                 Departamento depto = getDepartamentoRepositoryById(idDepartamento);
+                if (codigoExternoRepository.findByDepartamento(depto).isPresent()) {
+                        throw new CodigExternoException("El departamento ya tiene un código externo. Revise su asociación antes de agregar otro.");
+                }
 
                 CodigoExterno codEx = new CodigoExterno();
                 codEx.setDepartamento(depto);
